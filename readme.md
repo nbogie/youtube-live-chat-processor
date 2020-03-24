@@ -14,27 +14,39 @@ When the script runs you must oauth as someone who owns/admins the broadcasts
 
 ## How to get the livechatid:
 
-either:
+See also https://docs.google.com/spreadsheets/d/1P-OR1OvVFQkBetXzRLz99ln5Iaz4OwNSz5AZ2MbWpDk/edit#gid=0
+
+Either:
+
 1:
 
-```
 auth as the channel owner/admin and then
-listAllBroadcasts (get liveChatId for the relevant one) -> listLiveChatMessages
+
+```
+listAllBroadcasts
+    -> (manually inspect to find liveChatId for the relevant one)
+        -> listLiveChatMessages
 ```
 
 OR
 
+auth as the channel owner/admin and then
+
 ```
-auth as the channel owner/admin
 listLiveBroadcastByID(youtube-video-id)
+    -> listLiveChatMessages
 ```
 
 OR
 
+if the video is public, NOT unlisted...
+
+auth as anyone, and then...
+
 ```
-if the video is public, not unlisted...
-auth as anyone
+
 listSearchForLiveVideos(channel)
+    -> listLiveChatMessages
 ```
 
 - TODO: "This app hasn't been verified by Google yet. Only proceed if you know and trust the developer."
