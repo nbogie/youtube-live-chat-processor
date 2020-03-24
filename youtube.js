@@ -13,7 +13,7 @@ const TOKEN_PATH = "token.json";
 fs.readFile("credentials.json", (err, content) => {
   if (err) return console.log("Error loading client secret file:", err);
   // Authorize a client with credentials, then call the Google Apps Script API.
-  authorize(JSON.parse(content), callYoutubeAPI);
+  authorize(JSON.parse(content), listVideoById);
 });
 
 /**
@@ -75,13 +75,13 @@ function getAccessToken(oAuth2Client, callback) {
  */
 
 // Make sure the client is loaded and sign-in is complete before calling this method.
-function callYoutubeAPI(auth) {
+function listVideoById(auth) {
   const youtubeAPI = google.youtube({ version: "v3", auth });
 
-  return youtubeAPI.channels
+  return youtubeAPI.videos
     .list({
       part: "snippet,contentDetails,statistics",
-      forUsername: "actualol"
+      id: "ttGFes_WzDg"
     })
     .then(
       function(response) {
