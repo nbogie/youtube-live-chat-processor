@@ -13,7 +13,7 @@ const TOKEN_PATH = "token.json";
 fs.readFile("credentials.json", (err, content) => {
   if (err) return console.log("Error loading client secret file:", err);
   // Authorize a client with credentials, then call the Google Apps Script API.
-  authorize(JSON.parse(content), listVideoById);
+  authorize(JSON.parse(content), listAllBroadcasts);
 });
 
 /**
@@ -69,6 +69,51 @@ function getAccessToken(oAuth2Client, callback) {
   });
 }
 
+// Make sure the client is loaded and sign-in is complete before calling this method.
+function listActiveBroadcasts(auth) {
+  const youtubeAPI = google.youtube({ version: "v3", auth });
+
+  return youtubeAPI.liveBroadcasts
+    .list({
+      part: "snippet,contentDetails,status",
+      broadcastStatus: "active",
+      broadcastType: "all"
+    })
+    .then(
+      function(response) {
+        // Handle the results here (response.result has the parsed body).
+        console.log("Response", JSON.stringify(response, null, 2));
+
+        //        JSON.stringify(response.result.items, null, 2);
+      },
+      function(err) {
+        console.error("Execute error", err);
+      }
+    );
+}
+
+// Make sure the client is loaded and sign-in is complete before calling this method.
+function listAllBroadcasts(auth) {
+  const youtubeAPI = google.youtube({ version: "v3", auth });
+
+  return youtubeAPI.liveBroadcasts
+    .list({
+      part: "snippet,contentDetails,status",
+      broadcastStatus: "all",
+      broadcastType: "all"
+    })
+    .then(
+      function(response) {
+        // Handle the results here (response.result has the parsed body).
+        console.log("Response", JSON.stringify(response, null, 2));
+
+        //        JSON.stringify(response.result.items, null, 2);
+      },
+      function(err) {
+        console.error("Execute error", err);
+      }
+    );
+}
 // Make sure the client is loaded and sign-in is complete before calling this method.
 function listLiveBroadcastByID(auth) {
   const youtubeAPI = google.youtube({ version: "v3", auth });
