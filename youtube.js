@@ -13,7 +13,7 @@ const TOKEN_PATH = "token.json";
 fs.readFile("credentials.json", (err, content) => {
   if (err) return console.log("Error loading client secret file:", err);
   // Authorize a client with credentials, then call the Google Apps Script API.
-  authorize(JSON.parse(content), listAllBroadcasts);
+  authorize(JSON.parse(content), listLiveChatMessages);
 });
 
 /**
@@ -67,6 +67,29 @@ function getAccessToken(oAuth2Client, callback) {
       callback(oAuth2Client);
     });
   });
+}
+
+// Make sure the client is loaded and sign-in is complete before calling this method.
+function listLiveChatMessages(auth) {
+  const youtubeAPI = google.youtube({ version: "v3", auth });
+
+  return youtubeAPI.liveChatMessages
+    .list({
+      liveChatId:
+        "Cg0KC2hPM0VXYkc4MzJZKicKGFVDTy1objlNSk91N3BPVWRHU2FiS0d2QRILaE8zRVdiRzgzMlk",
+      part: "snippet,authorDetails"
+    })
+    .then(
+      function(response) {
+        // Handle the results here (response.result has the parsed body).
+        console.log("Response", JSON.stringify(response, null, 2));
+
+        //        JSON.stringify(response.result.items, null, 2);
+      },
+      function(err) {
+        console.error("Execute error", err);
+      }
+    );
 }
 
 // Make sure the client is loaded and sign-in is complete before calling this method.
