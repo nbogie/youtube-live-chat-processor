@@ -70,6 +70,8 @@ function getAccessToken(oAuth2Client, callback) {
 }
 
 // Make sure the client is loaded and sign-in is complete before calling this method.
+
+//NOTES: this doesn't need me to auth the channel the chat is under - i authed another channel. (it might matter that i am admin for it.)
 function listLiveChatMessages(auth) {
   const youtubeAPI = google.youtube({ version: "v3", auth });
 
@@ -77,14 +79,16 @@ function listLiveChatMessages(auth) {
     .list({
       liveChatId:
         "Cg0KC2hPM0VXYkc4MzJZKicKGFVDTy1objlNSk91N3BPVWRHU2FiS0d2QRILaE8zRVdiRzgzMlk",
-      part: "snippet,authorDetails"
+      //NOT WORKING or EMPTY
+      //  "EiEKGFVDTy1objlNSk91N3BPVWRHU2FiS0d2QRIFL2xpdmUqJwoYVUNPLWhuOU1KT3U3cE9VZEdTYWJLR3ZBEgtCUW5MdXlvUTZxSQ",
+      part: "snippet,authorDetails",
+      maxResults: 2000
     })
     .then(
       function(response) {
         // Handle the results here (response.result has the parsed body).
-        console.log("Response", JSON.stringify(response, null, 2));
-
-        //        JSON.stringify(response.result.items, null, 2);
+        console.log(JSON.stringify(response, null, 2));
+        //processLiveChatMessagesResponse(response);
       },
       function(err) {
         console.error("Execute error", err);
@@ -105,9 +109,7 @@ function listActiveBroadcasts(auth) {
     .then(
       function(response) {
         // Handle the results here (response.result has the parsed body).
-        console.log("Response", JSON.stringify(response, null, 2));
-
-        //        JSON.stringify(response.result.items, null, 2);
+        console.log(JSON.stringify(response, null, 2));
       },
       function(err) {
         console.error("Execute error", err);
@@ -128,9 +130,7 @@ function listAllBroadcasts(auth) {
     .then(
       function(response) {
         // Handle the results here (response.result has the parsed body).
-        console.log("Response", JSON.stringify(response, null, 2));
-
-        //        JSON.stringify(response.result.items, null, 2);
+        console.log(JSON.stringify(response, null, 2));
       },
       function(err) {
         console.error("Execute error", err);
@@ -149,9 +149,7 @@ function listLiveBroadcastByID(auth) {
     .then(
       function(response) {
         // Handle the results here (response.result has the parsed body).
-        console.log("Response", JSON.stringify(response, null, 2));
-
-        //        JSON.stringify(response.result.items, null, 2);
+        console.log(JSON.stringify(response, null, 2));
       },
       function(err) {
         console.error("Execute error", err);
@@ -172,12 +170,23 @@ function listVideoById(auth) {
     .then(
       function(response) {
         // Handle the results here (response.result has the parsed body).
-        console.log("Response", JSON.stringify(response, null, 2));
-
-        //        JSON.stringify(response.result.items, null, 2);
+        console.log(JSON.stringify(response, null, 2));
       },
       function(err) {
         console.error("Execute error", err);
       }
     );
+}
+
+function processLiveChatMessagesResponse(response) {
+  console.log(
+    response.data.items
+      .map(m => {
+        return {
+          msg: m.snippet.displayMessage,
+          author: m.authorDetails.displayName
+        };
+      })
+      .filter(({ msg }) => msg.length === 3)
+  );
 }
