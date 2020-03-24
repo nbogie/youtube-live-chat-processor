@@ -69,10 +69,27 @@ function getAccessToken(oAuth2Client, callback) {
   });
 }
 
-/**
- * Creates a new script project, upload a file, and log the script's URL.
- * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
- */
+// Make sure the client is loaded and sign-in is complete before calling this method.
+function listLiveBroadcastByID(auth) {
+  const youtubeAPI = google.youtube({ version: "v3", auth });
+
+  return youtubeAPI.liveBroadcasts
+    .list({
+      part: "snippet,contentDetails,status",
+      id: "hO3EWbG832Y" //TODO: this should be BROADCAST_ID
+    })
+    .then(
+      function(response) {
+        // Handle the results here (response.result has the parsed body).
+        console.log("Response", JSON.stringify(response, null, 2));
+
+        //        JSON.stringify(response.result.items, null, 2);
+      },
+      function(err) {
+        console.error("Execute error", err);
+      }
+    );
+}
 
 // Make sure the client is loaded and sign-in is complete before calling this method.
 function listVideoById(auth) {
@@ -81,7 +98,8 @@ function listVideoById(auth) {
   return youtubeAPI.videos
     .list({
       part: "snippet,contentDetails,statistics",
-      id: "ttGFes_WzDg"
+      id: "hO3EWbG832Y"
+      //id: "ttGFes_WzDg"
     })
     .then(
       function(response) {
