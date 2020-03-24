@@ -13,7 +13,7 @@ const TOKEN_PATH = "token.json";
 fs.readFile("credentials.json", (err, credentialsJSONStr) => {
   if (err) return console.log("Error loading client secret file:", err);
   // Authorize a client with credentials, then call the Google Apps Script API.
-  authorize(JSON.parse(credentialsJSONStr), listLiveChatMessages);
+  authorize(JSON.parse(credentialsJSONStr), listChannelForUsername);
 });
 
 function logResponse(response) {
@@ -202,4 +202,21 @@ function processLiveBroadcastsResponse(response) {
       };
     })
   );
+}
+
+/**
+ * Get info about the given channel
+ * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
+ */
+
+// Make sure the client is loaded and sign-in is complete before calling this method.
+function listChannelForUsername(auth) {
+  const youtubeAPI = google.youtube({ version: "v3", auth });
+
+  return youtubeAPI.channels
+    .list({
+      part: "snippet,contentDetails,statistics",
+      forUsername: "actualol"
+    })
+    .then(logResponse, logError);
 }
