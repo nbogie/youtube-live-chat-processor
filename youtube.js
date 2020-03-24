@@ -13,7 +13,7 @@ const TOKEN_PATH = "token.json";
 fs.readFile("credentials.json", (err, credentialsJSONStr) => {
   if (err) return console.log("Error loading client secret file:", err);
   // Authorize a client with credentials, then call the Google Apps Script API.
-  authorize(JSON.parse(credentialsJSONStr), listChannelForUsername);
+  authorize(JSON.parse(credentialsJSONStr), listLiveChatMessages);
 });
 
 function logResponse(response) {
@@ -86,9 +86,7 @@ function listLiveChatMessages(auth) {
   return youtubeAPI.liveChatMessages
     .list({
       liveChatId:
-        "Cg0KC2hPM0VXYkc4MzJZKicKGFVDTy1objlNSk91N3BPVWRHU2FiS0d2QRILaE8zRVdiRzgzMlk",
-      //NOT WORKING or EMPTY
-      //"EiEKGFVDTy1objlNSk91N3BPVWRHU2FiS0d2QRIFL2xpdmUqJwoYVUNPLWhuOU1KT3U3cE9VZEdTYWJLR3ZBEgtCUW5MdXlvUTZxSQ",
+        "Cg0KC2hPM0VXYkc4MzJZKicKGFVDTy1objlNSk91N3BPVWRHU2FiS0d2QRILaE8zRVdiRzgzMlk", //deleted
       part: "snippet,authorDetails",
       maxResults: 2000
     })
@@ -180,6 +178,23 @@ function listVideoById(auth) {
     .then(logResponse, logError);
 }
 
+/**
+ * Get info about the given channel
+ * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
+ */
+
+// Make sure the client is loaded and sign-in is complete before calling this method.
+function listChannelForUsername(auth) {
+  const youtubeAPI = google.youtube({ version: "v3", auth });
+
+  return youtubeAPI.channels
+    .list({
+      part: "snippet,contentDetails,statistics",
+      forUsername: "actualol"
+    })
+    .then(logResponse, logError);
+}
+
 function processLiveChatMessagesResponse(response) {
   console.log(
     response.data.items
@@ -202,21 +217,4 @@ function processLiveBroadcastsResponse(response) {
       };
     })
   );
-}
-
-/**
- * Get info about the given channel
- * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
- */
-
-// Make sure the client is loaded and sign-in is complete before calling this method.
-function listChannelForUsername(auth) {
-  const youtubeAPI = google.youtube({ version: "v3", auth });
-
-  return youtubeAPI.channels
-    .list({
-      part: "snippet,contentDetails,statistics",
-      forUsername: "actualol"
-    })
-    .then(logResponse, logError);
 }
